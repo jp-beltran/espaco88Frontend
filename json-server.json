@@ -1,0 +1,5 @@
+{
+  "routes": "routes.json",
+  "port": 3001,
+  "host": "localhost"
+}
