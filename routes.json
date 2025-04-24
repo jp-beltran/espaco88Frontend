@@ -1,8 +1,0 @@
-{
-  "/api/users/register": "/users",
-  "/api/auth/login": "/users",
-  "/api/users/:id_user": "/users/:id_user",
-  "/api/appointments": "/appointments",
-  "/api/services": "/services",
-  "/api/reports/appointments": "/reports/appointments"
-}

@@ -1,8 +1,12 @@
-// src/components/RegisterComponent.tsx
+import { motion } from "framer-motion";
 import { Input, Form, Checkbox, Button, message } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { registerUser } from "../Services/api";
+
+interface RegisterComponentProps {
+  onSwitchToLogin: () => void;
+}
 
 interface FormValues {
   name: string;
@@ -13,31 +17,36 @@ interface FormValues {
   isBarber?: boolean;
 }
 
-function RegisterComponent() {
+function RegisterComponent({ onSwitchToLogin }: RegisterComponentProps) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values: FormValues) => {
     setLoading(true);
-    const userType = values.isBarber ? "barber" : "client";
-    const payload = { ...values, type: userType };
-    delete payload.isBarber;
 
-    try {
-      const data = await registerUser(payload);
-      console.log("API response:", data);
+    const userType: "barber" | "client" = values.isBarber ? "barber" : "client";
+
+    const payload = {
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      confirmPassword: values.confirmPassword,
+      phone: values.phone,
+      type: userType,
+    };
+
+    const data = await registerUser(payload);
+    console.log("API response:", data);
+
+    if (data.error || data.errors) {
+      const errorMsg = data.error || data.errors?.[0] || "Erro ao cadastrar.";
+      message.error(errorMsg);
+    } else {
       message.success("Usuário cadastrado com sucesso!");
-    } catch (error: any) {
-      console.error("Erro:", error);
-      message.error(
-        "Erro ao cadastrar: " +
-          (error.response?.data?.error ||
-            error.response?.data?.errors?.[0] ||
-            error.message)
-      );
-    } finally {
-      setLoading(false);
+      form.resetFields();
     }
+
+    setLoading(false);
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -46,8 +55,15 @@ function RegisterComponent() {
   };
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="flex flex-col items-start justify-center px-32 gap-4 h-full">
+    <motion.div
+      initial={{ x: 100, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: -100, opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex items-center justify-center h-full"
+    >
+      <div className="flex flex-col items-end justify-center px-32 gap-2">
+        <img src="" alt="Logo" />
         <h1 className="font-titanOne text-white text-4xl font-extrabold">
           Acesse a Plataforma
         </h1>
@@ -62,9 +78,12 @@ function RegisterComponent() {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
-          {/* Nome */}
           <Form.Item
-            label={<span className="text-white">Nome</span>}
+            label={
+              <span className="text-white text-base font-bold items-end">
+                Nome
+              </span>
+            }
             name="name"
             rules={[
               { required: true, message: "Digite seu nome!" },
@@ -90,9 +109,10 @@ function RegisterComponent() {
             <Input size="large" placeholder="Digite seu Nome" maxLength={50} />
           </Form.Item>
 
-          {/* Email */}
           <Form.Item
-            label={<span className="text-white">Email</span>}
+            label={
+              <span className="text-white text-base font-bold">Email</span>
+            }
             name="email"
             rules={[
               { required: true, message: "Digite seu email!" },
@@ -103,12 +123,12 @@ function RegisterComponent() {
             <Input size="large" placeholder="example@xxx.com" />
           </Form.Item>
 
-          {/* Senha */}
           <Form.Item
-            label={<span className="text-white">Senha</span>}
+            label={
+              <span className="text-white text-base font-bold">Senha</span>
+            }
             name="password"
             rules={[
-              { required: true },
               { max: 20 },
               {
                 validator: (_, value) => {
@@ -130,12 +150,15 @@ function RegisterComponent() {
               },
             ]}
           >
-            <Input.Password placeholder="Digite sua senha" />
+            <Input.Password size="large" placeholder="Digite sua senha" />
           </Form.Item>
 
-          {/* Confirmação de senha */}
           <Form.Item
-            label={<span className="text-white">Confirme sua senha</span>}
+            label={
+              <span className="text-white text-base font-bold">
+                Confirme sua senha
+              </span>
+            }
             name="confirmPassword"
             dependencies={["password"]}
             rules={[
@@ -149,25 +172,27 @@ function RegisterComponent() {
               }),
             ]}
           >
-            <Input.Password placeholder="Confirme sua senha" />
+            <Input.Password size="large" placeholder="Confirme sua senha" />
           </Form.Item>
 
-          {/* Telefone */}
           <Form.Item
-            label={<span className="text-white">Telefone</span>}
+            label={
+              <span className="text-white text-base font-bold">Telefone</span>
+            }
             name="phone"
             rules={[
               { required: true },
               { max: 15, message: "Máximo de 15 caracteres" },
             ]}
           >
-            <Input placeholder="(xx)xxxxx-xxxx" />
+            <Input size="large" placeholder="(xx)xxxxx-xxxx" />
           </Form.Item>
 
-          {/* Checkbox de barbeiro */}
           <Form.Item name="isBarber" valuePropName="checked">
             <Checkbox>
-              <span className="text-white">Sou Barbeiro</span>
+              <span className="text-white text-base font-bold">
+                Sou Barbeiro
+              </span>
             </Checkbox>
           </Form.Item>
 
@@ -177,20 +202,24 @@ function RegisterComponent() {
               htmlType="submit"
               loading={loading}
               className="bg-yellow-400 font-bold text-black hover:bg-yellow-300 w-full"
+              size="large"
             >
               {loading ? <LoadingOutlined /> : "Criar"}
             </Button>
           </Form.Item>
 
-          <p className="text-white">
+          <p className="text-white text-base font-bold">
             Já possui uma conta?{" "}
-            <a href="#" className="!text-[#F6DA5E] no-underline font-extrabold">
+            <button
+              onClick={onSwitchToLogin}
+              className="!text-[#F6DA5E] no-underline font-extrabold bg-transparent border-none cursor-pointer"
+            >
               Entrar
-            </a>
+            </button>
           </p>
         </Form>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
