@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { Input, Form, Button, message, Alert } from "antd"; // 👈 Adicionado Alert
-import { LoadingOutlined } from "@ant-design/icons";
+import { Input, Form, Button, message, Alert } from "antd";
 import { useState } from "react";
 import { loginUser } from "../Services/api";
 
