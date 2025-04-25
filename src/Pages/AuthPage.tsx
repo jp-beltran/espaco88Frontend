@@ -41,7 +41,7 @@ function AuthPage() {
       {/* Formulários */}
       <div className="relative z-10 flex w-full h-full flex-col lg:flex-row">
         {/* Login */}
-        <div className="w-full lg:w-1/2 h-full flex items-center justify-center overflow-hidden">
+        <div className="w-full lg:w-1/2  flex items-center justify-center ">
           <AnimatePresence mode="wait">
             {isLogin && (
               <motion.div
