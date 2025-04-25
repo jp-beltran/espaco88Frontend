@@ -60,7 +60,7 @@ function AuthPage() {
         </div>
 
         {/* Register */}
-        <div className="w-full lg:w-1/2  flex items-center justify-center overflow-auto">
+        <div className="w-full lg:w-1/2  flex items-center justify-center overflow-y-auto overflow-x-hidden">
           <AnimatePresence mode="wait">
             {!isLogin && (
               <motion.div
@@ -70,7 +70,7 @@ function AuthPage() {
                 animate="animateCenter"
                 exit="exitRight"
                 transition={{ duration: 0.5 }}
-                className="w-full h-full flex items-center justify-center"
+                className="w-full h-full flex items-center justify-center "
               >
                 <RegisterComponent onSwitchToLogin={toggleAuth} />
               </motion.div>

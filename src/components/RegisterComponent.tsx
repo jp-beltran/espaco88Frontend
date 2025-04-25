@@ -66,7 +66,7 @@ function RegisterComponent({ onSwitchToLogin }: RegisterComponentProps) {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: -100, opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="flex items-center justify-center h-full"
+      className="flex items-center justify-center h-screen "
     >
       <div className="flex flex-col items-end justify-center lg:px-32 gap-2">
         <img src="" alt="Logo" />
