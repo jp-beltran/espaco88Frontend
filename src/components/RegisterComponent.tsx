@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { Input, Form, Checkbox, Button, message } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { Input, Form, Checkbox, Button, message, Alert } from "antd";
 import { useState } from "react";
 import { registerUser } from "../Services/api";
 
@@ -20,9 +19,13 @@ interface FormValues {
 function RegisterComponent({ onSwitchToLogin }: RegisterComponentProps) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const onFinish = async (values: FormValues) => {
     setLoading(true);
+    setSuccess(false);
+    setErrorMessage(null);
 
     const userType: "barber" | "client" = values.isBarber ? "barber" : "client";
 
@@ -40,8 +43,11 @@ function RegisterComponent({ onSwitchToLogin }: RegisterComponentProps) {
 
     if (data.error || data.errors) {
       const errorMsg = data.error || data.errors?.[0] || "Erro ao cadastrar.";
+      setErrorMessage(errorMsg);
       message.error(errorMsg);
     } else {
+      setSuccess(true);
+      setErrorMessage(null);
       message.success("Usuário cadastrado com sucesso!");
       form.resetFields();
     }
@@ -71,6 +77,27 @@ function RegisterComponent({ onSwitchToLogin }: RegisterComponentProps) {
           Faça login ou registre-se para experimentar um <br /> corte impecável
           que realça sua personalidade.
         </h2>
+
+        {/* Alert de sucesso */}
+        {success && (
+          <Alert
+            message="Cadastro realizado com sucesso! Faça login para continuar."
+            type="success"
+            showIcon
+            className="w-full"
+          />
+        )}
+
+        {/* Alert de erro da API */}
+        {errorMessage && (
+          <Alert
+            message={errorMessage}
+            type="warning"
+            showIcon
+            className="w-1/2"
+          />
+        )}
+
         <Form
           className="flex flex-col w-96"
           form={form}
@@ -79,11 +106,7 @@ function RegisterComponent({ onSwitchToLogin }: RegisterComponentProps) {
           onFinishFailed={onFinishFailed}
         >
           <Form.Item
-            label={
-              <span className="text-white text-base font-bold items-end">
-                Nome
-              </span>
-            }
+            label={<span className="text-white text-base font-bold">Nome</span>}
             name="name"
             rules={[
               { required: true, message: "Digite seu nome!" },
@@ -204,7 +227,7 @@ function RegisterComponent({ onSwitchToLogin }: RegisterComponentProps) {
               className="bg-yellow-400 font-bold text-black hover:bg-yellow-300 w-full"
               size="large"
             >
-              {loading ? <LoadingOutlined /> : "Criar"}
+              Criar
             </Button>
           </Form.Item>
 

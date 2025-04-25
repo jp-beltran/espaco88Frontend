@@ -113,7 +113,7 @@ function LoginComponent({ onSwitchToRegister }: LoginComponentProps) {
               className="bg-yellow-400 font-bold text-black hover:bg-yellow-300 w-full"
               size="large"
             >
-              {loading ? <LoadingOutlined /> : "Entrar"}
+              Entrar
             </Button>
           </Form.Item>
 
