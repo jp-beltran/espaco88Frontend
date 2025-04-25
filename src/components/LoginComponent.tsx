@@ -49,9 +49,9 @@ function LoginComponent({ onSwitchToRegister }: LoginComponentProps) {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 100, opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="flex items-center justify-center h-full"
+      className="flex items-center justify-center lg:mt-0 my-20"
     >
-      <div className="flex flex-col items-start justify-center px-32 gap-2">
+      <div className="flex flex-col items-start justify-center lg:px-32 gap-2">
         <img src="" alt="Logo" />
         <h1 className="font-titanOne text-white text-4xl font-extrabold">
           Bem-vindo!
@@ -71,7 +71,7 @@ function LoginComponent({ onSwitchToRegister }: LoginComponentProps) {
         )}
 
         <Form
-          className="flex flex-col w-96"
+          className="flex flex-col w-full max-w-md"
           form={form}
           layout="vertical"
           onFinish={onFinish}

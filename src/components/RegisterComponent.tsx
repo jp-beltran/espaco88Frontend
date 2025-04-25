@@ -68,7 +68,7 @@ function RegisterComponent({ onSwitchToLogin }: RegisterComponentProps) {
       transition={{ duration: 0.5 }}
       className="flex items-center justify-center h-full"
     >
-      <div className="flex flex-col items-end justify-center px-32 gap-2">
+      <div className="flex flex-col items-end justify-center lg:px-32 gap-2">
         <img src="" alt="Logo" />
         <h1 className="font-titanOne text-white text-4xl font-extrabold">
           Acesse a Plataforma
@@ -99,7 +99,7 @@ function RegisterComponent({ onSwitchToLogin }: RegisterComponentProps) {
         )}
 
         <Form
-          className="flex flex-col w-96"
+          className="flex flex-col w-full max-w-md"
           form={form}
           layout="vertical"
           onFinish={onFinish}

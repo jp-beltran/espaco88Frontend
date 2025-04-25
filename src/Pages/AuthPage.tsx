@@ -60,7 +60,7 @@ function AuthPage() {
         </div>
 
         {/* Register */}
-        <div className="w-full lg:w-1/2  flex items-center justify-center overflow-hidden">
+        <div className="w-full lg:w-1/2  flex items-center justify-center overflow-auto">
           <AnimatePresence mode="wait">
             {!isLogin && (
               <motion.div
