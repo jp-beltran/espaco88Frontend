@@ -15,7 +15,9 @@ interface LoginFormValues {
 function LoginComponent({ onSwitchToRegister }: LoginComponentProps) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false); // 👈 Novo estado para alerta
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const [success, setSuccess] = useState(false);
 
   const onFinish = async (values: LoginFormValues) => {
     setLoading(true);
@@ -27,12 +29,14 @@ function LoginComponent({ onSwitchToRegister }: LoginComponentProps) {
       if (response.token) {
         message.success("Login realizado com sucesso!");
         setSuccess(true);
+        setErrorMessage(null); // limpa erro anterior
         localStorage.setItem("token", response.token);
         form.resetFields();
       } else {
-        throw new Error(response.error || "Erro ao fazer login.");
+        throw new Error(response.error || "Credenciais inválidas.");
       }
     } catch (err: any) {
+      setErrorMessage(err.message || "Erro ao fazer login."); // define mensagem visível
       message.error(err.message || "Erro ao fazer login.");
     }
 
@@ -65,6 +69,14 @@ function LoginComponent({ onSwitchToRegister }: LoginComponentProps) {
           <Alert
             message="Login com sucesso!"
             type="success"
+            showIcon
+            className="w-full"
+          />
+        )}
+        {errorMessage && (
+          <Alert
+            message={errorMessage}
+            type="error"
             showIcon
             className="w-full"
           />
