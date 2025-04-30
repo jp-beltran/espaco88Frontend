@@ -23,10 +23,10 @@ function AuthPage() {
   };
 
   return (
-    <div className="relative w-full h-screen bg-[#232225] overflow-hidden flex items-center justify-center">
+    <div className="relative w-full min-h-screen bg-[#232225] overflow-hidden flex items-center justify-center">
       {/* Imagem animada - apenas visível em telas grandes */}
       <motion.div
-        className="hidden lg:block absolute top-0 left-0 w-1/2 h-full z-0"
+        className="hidden lg:block absolute top-0 left-0 w-1/2 min-h-full z-0"
         variants={imageVariants}
         animate={isLogin ? "login" : "register"}
         transition={{ duration: 0.5 }}
@@ -34,12 +34,12 @@ function AuthPage() {
         <img
           src={backgroundAuth}
           alt="Background"
-          className="w-full h-full object-cover"
+          className="w-full min-h-full object-cover"
         />
       </motion.div>
 
       {/* Formulários */}
-      <div className="relative z-10 flex w-full h-full flex-col lg:flex-row">
+      <div className="relative z-10 flex w-full min-h-full flex-col lg:flex-row">
         {/* Login */}
         <div className="w-full lg:w-1/2  flex items-center justify-center ">
           <AnimatePresence mode="wait">

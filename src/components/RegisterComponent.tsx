@@ -66,9 +66,9 @@ function RegisterComponent({ onSwitchToLogin }: RegisterComponentProps) {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: -100, opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="flex items-center justify-center h-screen "
+      className="flex items-center justify-center h-auto "
     >
-      <div className="flex flex-col items-start justify-center w-full px-6 md:px-20 lg:px-32 gap-2">
+      <div className="flex flex-col items-start justify-center w-full px-6 md:px-20 lg:px-32 gap-2 py-10 lg:py-20 ">
         <img src="" alt="Logo" />
         <h1 className="font-titanOne text-white text-4xl font-extrabold">
           Acesse a Plataforma
@@ -99,7 +99,7 @@ function RegisterComponent({ onSwitchToLogin }: RegisterComponentProps) {
         )}
 
         <Form
-          className="flex flex-col w-full max-w-md px-6 sm:px-10 md:px-20 "
+          className="flex flex-col w-full  lg:max-w-md mx-auto"
           form={form}
           layout="vertical"
           onFinish={onFinish}
