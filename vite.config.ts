@@ -28,6 +28,7 @@ export default defineConfig({
     host: "0.0.0.0",
     port: process.env.PORT ? parseInt(process.env.PORT) : 4173,
     strictPort: true,
+    allowedHosts: ["all"], // Permite todos os hosts - essencial para Railway
   },
 
   // Configurações de desenvolvimento
