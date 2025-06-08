@@ -1,4 +1,3 @@
-# railway.toml
 [build]
 builder = "nixpacks"
 
@@ -9,3 +8,4 @@ restartPolicyMaxRetries = 10
 
 [environments.production.variables]
 NODE_ENV = "production"
+VITE_API_URL = "https://espaco88backend-production.up.railway.app"
