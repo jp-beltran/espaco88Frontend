@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Input, Form, Button, message, Alert } from "antd";
 import { useState } from "react";
 import { loginUser } from "../Services/api";
+import { useNavigate } from "react-router-dom";
 
 interface LoginComponentProps {
   onSwitchToRegister: () => void;
@@ -13,6 +14,7 @@ interface LoginFormValues {
 }
 
 function LoginComponent({ onSwitchToRegister }: LoginComponentProps) {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -31,7 +33,18 @@ function LoginComponent({ onSwitchToRegister }: LoginComponentProps) {
         setSuccess(true);
         setErrorMessage(null); // limpa erro anterior
         localStorage.setItem("token", response.token);
+        
+        // Salvar tipo de usuário
+        if (response.user && response.user.type) {
+          localStorage.setItem("userType", response.user.type);
+        }
+        
         form.resetFields();
+        
+        // Redirecionar para página do usuário após 1 segundo
+        setTimeout(() => {
+          navigate('/user');
+        }, 1000);
       } else {
         throw new Error(response.error || "Credenciais inválidas.");
       }
