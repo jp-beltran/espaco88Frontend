@@ -54,6 +54,7 @@ function UserProfile() {
   // Detectar alterações no formulário - CORRIGIDO
   const onValuesChange = (changedValues: any, allValues: any) => {
     if (!user) return;
+    console.log("Campos alterados:", changedValues);
 
     // Verificar se houve mudanças comparando com os dados originais
     const hasChanges =

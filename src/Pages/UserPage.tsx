@@ -1,48 +1,55 @@
 import { useEffect, useState } from "react";
 import { Button, message } from "antd";
-import { LogoutOutlined, PlusOutlined, CalendarOutlined, ScissorOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  PlusOutlined,
+  ScissorOutlined,
+  ClockCircleOutlined,
+} from "@ant-design/icons";
 import UserProfile from "../components/UserProfile";
 import UserSchedule from "../components/UserSchedule";
 import { useNavigate } from "react-router-dom";
 
 function UserPage() {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState<'client' | 'barber'>('client');
+  const [userType, setUserType] = useState<"client" | "barber">("client");
 
   useEffect(() => {
     // Verificar se o usuário está autenticado
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
-    
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
     if (!token || !userId) {
       message.error("Você precisa estar logado para acessar esta página");
-      navigate('/');
+      navigate("/");
       return;
     }
 
     // Obter tipo de usuário do localStorage (seria melhor vir do token JWT decodificado)
-    const storedUserType = localStorage.getItem('userType') as 'client' | 'barber';
+    const storedUserType = localStorage.getItem("userType") as
+      | "client"
+      | "barber";
     if (storedUserType) {
       setUserType(storedUserType);
     }
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userType');
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userType");
     message.success("Logout realizado com sucesso!");
-    navigate('/');
+    navigate("/");
   };
 
   const handleNewAppointment = () => {
     // Navegar para página de novo agendamento
-    navigate('/appointment/new');
+    navigate("/appointment/new");
   };
 
   const handleManageServices = () => {
     // Navegar para página de gerenciamento de serviços (apenas barbeiros)
-    navigate('/services');
+    navigate("/services");
   };
 
   return (
@@ -55,12 +62,12 @@ function UserPage() {
               Espaço88
             </h1>
             <p className="text-gray-400 mt-1">
-              {userType === 'barber' ? 'Painel do Barbeiro' : 'Área do Cliente'}
+              {userType === "barber" ? "Painel do Barbeiro" : "Área do Cliente"}
             </p>
           </div>
-          
+
           <div className="flex flex-wrap gap-3">
-            {userType === 'client' ? (
+            {userType === "client" ? (
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
@@ -73,7 +80,7 @@ function UserPage() {
               <>
                 <Button
                   icon={<ClockCircleOutlined />}
-                  onClick={() => navigate('/schedule-settings')}
+                  onClick={() => navigate("/schedule-settings")}
                   className="border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black"
                 >
                   Configurar Horários
@@ -87,12 +94,8 @@ function UserPage() {
                 </Button>
               </>
             )}
-            
-            <Button
-              danger
-              icon={<LogoutOutlined />}
-              onClick={handleLogout}
-            >
+
+            <Button danger icon={<LogoutOutlined />} onClick={handleLogout}>
               Sair
             </Button>
           </div>
@@ -103,7 +106,7 @@ function UserPage() {
       <div className="max-w-7xl mx-auto flex flex-col gap-8">
         {/* Agendamentos */}
         <UserSchedule />
-        
+
         {/* Perfil */}
         <UserProfile />
       </div>
