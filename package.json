@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview --host 0.0.0.0 --port $PORT",
-    "start": "npm run preview",
+    "start": "serve -s dist -p ${PORT:-3000}",
     "server": "json-server --watch db.json --port 3000"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "react-datetime-picker": "^6.0.1",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0",
+    "serve": "^14.2.1",
     "tailwindcss": "^4.0.13",
     "yarn": "^1.22.22"
   },
@@ -39,7 +40,6 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
     "prettier": "^3.5.3",
-    "terser": "^5.41.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0"
