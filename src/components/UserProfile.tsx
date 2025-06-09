@@ -24,12 +24,12 @@ function UserProfile() {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const userId = localStorage.getItem('userId');
-        
+        const userId = localStorage.getItem("userId");
+
         if (!userId) {
           message.error("Usuário não encontrado. Faça login novamente.");
           // Redirecionar para login
-          window.location.href = '/';
+          window.location.href = "/";
           return;
         }
 
@@ -51,31 +51,40 @@ function UserProfile() {
     fetchUserData();
   }, [form]);
 
-  // Detectar alterações no formulário
-  const onValuesChange = () => {
-    setIsTouched(form.isFieldsTouched(true));
+  // Detectar alterações no formulário - CORRIGIDO
+  const onValuesChange = (changedValues: any, allValues: any) => {
+    if (!user) return;
+
+    // Verificar se houve mudanças comparando com os dados originais
+    const hasChanges =
+      allValues.name !== user.name ||
+      allValues.email !== user.email ||
+      allValues.phone !== user.phone ||
+      (allValues.password && allValues.password.length > 0);
+
+    setIsTouched(hasChanges);
   };
 
   const onFinish = async (values: any) => {
     if (!user) return;
-    
+
     setUpdating(true);
     try {
       // Preparar dados para envio (apenas campos modificados)
       const updateData: UpdateUserData = {};
-      
+
       if (values.name !== user.name) updateData.name = values.name;
       if (values.email !== user.email) updateData.email = values.email;
       if (values.phone !== user.phone) updateData.phone = values.phone;
       if (values.password) updateData.password = values.password;
 
       await updateUser(user.id, updateData);
-      
+
       message.success("Perfil atualizado com sucesso!");
-      
+
       // Atualizar estado local com novos dados
       setUser({ ...user, ...updateData });
-      
+
       // Resetar estados
       setIsTouched(false);
       setEditEnabled({
@@ -84,10 +93,9 @@ function UserProfile() {
         phone: false,
         password: false,
       });
-      
+
       // Limpar campo de senha
-      form.setFieldValue('password', '');
-      
+      form.setFieldValue("password", "");
     } catch (error: any) {
       console.error("Erro ao atualizar o perfil:", error);
       message.error(error.error || "Erro ao atualizar o perfil");
@@ -124,7 +132,7 @@ function UserProfile() {
       <h1 className="text-yellow-400 text-2xl lg:text-3xl font-bold uppercase mb-6 lg:mb-10">
         Meu Perfil
       </h1>
-      
+
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
         {/* Foto e nome */}
         <div className="flex flex-col items-center justify-start">
@@ -137,7 +145,7 @@ function UserProfile() {
               src={`https://ui-avatars.com/api/?name=${user.name}&background=F6DA5E&color=232225&size=200`}
               alt="Foto do perfil"
             />
-            {user.type === 'barber' && (
+            {user.type === "barber" && (
               <div className="absolute -bottom-2 -right-2 bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">
                 BARBEIRO
               </div>
@@ -146,7 +154,9 @@ function UserProfile() {
           <h2 className="mt-4 text-lg font-bold uppercase text-white">
             {user.name}
           </h2>
-          <p className="text-gray-400 text-sm">{user.type === 'barber' ? 'Profissional' : 'Cliente'}</p>
+          <p className="text-gray-400 text-sm">
+            {user.type === "barber" ? "Profissional" : "Cliente"}
+          </p>
         </div>
 
         {/* Formulário */}
@@ -164,15 +174,15 @@ function UserProfile() {
             rules={[
               { required: true, message: "Nome é obrigatório" },
               { min: 3, message: "Mínimo 3 caracteres" },
-              { max: 50, message: "Máximo 50 caracteres" }
+              { max: 50, message: "Máximo 50 caracteres" },
             ]}
           >
             <Input
               disabled={!editEnabled.name}
               className="bg-[#1a1a1a] text-white border-gray-600"
               style={{
-                backgroundColor: editEnabled.name ? '#1a1a1a' : '#0a0a0a',
-                color: '#ffffff',
+                backgroundColor: editEnabled.name ? "#1a1a1a" : "#0a0a0a",
+                color: "#ffffff",
               }}
               addonAfter={
                 <EditOutlined
@@ -184,20 +194,22 @@ function UserProfile() {
           </Form.Item>
 
           <Form.Item
-            label={<span className="text-white text-base font-bold">Email</span>}
+            label={
+              <span className="text-white text-base font-bold">Email</span>
+            }
             name="email"
             rules={[
               { required: true, message: "Email é obrigatório" },
               { type: "email", message: "Email inválido" },
-              { max: 100, message: "Máximo 100 caracteres" }
+              { max: 100, message: "Máximo 100 caracteres" },
             ]}
           >
             <Input
               disabled={!editEnabled.email}
               className="bg-[#1a1a1a] text-white border-gray-600"
               style={{
-                backgroundColor: editEnabled.email ? '#1a1a1a' : '#0a0a0a',
-                color: '#ffffff',
+                backgroundColor: editEnabled.email ? "#1a1a1a" : "#0a0a0a",
+                color: "#ffffff",
               }}
               addonAfter={
                 <EditOutlined
@@ -209,19 +221,21 @@ function UserProfile() {
           </Form.Item>
 
           <Form.Item
-            label={<span className="text-white text-base font-bold">Telefone</span>}
+            label={
+              <span className="text-white text-base font-bold">Telefone</span>
+            }
             name="phone"
             rules={[
               { required: true, message: "Telefone é obrigatório" },
-              { max: 15, message: "Máximo 15 caracteres" }
+              { max: 15, message: "Máximo 15 caracteres" },
             ]}
           >
             <Input
               disabled={!editEnabled.phone}
               className="bg-[#1a1a1a] text-white border-gray-600"
               style={{
-                backgroundColor: editEnabled.phone ? '#1a1a1a' : '#0a0a0a',
-                color: '#ffffff',
+                backgroundColor: editEnabled.phone ? "#1a1a1a" : "#0a0a0a",
+                color: "#ffffff",
               }}
               placeholder="(00) 00000-0000"
               addonAfter={
@@ -234,7 +248,9 @@ function UserProfile() {
           </Form.Item>
 
           <Form.Item
-            label={<span className="text-white text-base font-bold">Nova Senha</span>}
+            label={
+              <span className="text-white text-base font-bold">Nova Senha</span>
+            }
             name="password"
             rules={[
               { min: 8, message: "Mínimo 8 caracteres" },
@@ -243,10 +259,14 @@ function UserProfile() {
                 validator: (_, value) => {
                   if (!value || !editEnabled.password) return Promise.resolve();
                   if (!/(?=.*[A-Z])/.test(value)) {
-                    return Promise.reject(new Error("Deve conter ao menos uma letra maiúscula"));
+                    return Promise.reject(
+                      new Error("Deve conter ao menos uma letra maiúscula")
+                    );
                   }
                   if (!/(?=.*\d)/.test(value)) {
-                    return Promise.reject(new Error("Deve conter ao menos um número"));
+                    return Promise.reject(
+                      new Error("Deve conter ao menos um número")
+                    );
                   }
                   return Promise.resolve();
                 },
@@ -257,8 +277,8 @@ function UserProfile() {
               disabled={!editEnabled.password}
               className="bg-[#1a1a1a] text-white border-gray-600"
               style={{
-                backgroundColor: editEnabled.password ? '#1a1a1a' : '#0a0a0a',
-                color: '#ffffff',
+                backgroundColor: editEnabled.password ? "#1a1a1a" : "#0a0a0a",
+                color: "#ffffff",
               }}
               placeholder="Deixe em branco para manter a atual"
               addonAfter={
