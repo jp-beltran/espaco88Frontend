@@ -1,6 +1,6 @@
 // src/Services/api.ts
 import axios from "axios";
-import { User, Appointment, UpdateUserData } from "../Types/index";
+import { User, Appointment, UpdateUserData, Service } from "../Types";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -113,7 +113,6 @@ export const getUserAppointments = async (userId: number): Promise<Appointment[]
 // Cancelar agendamento
 export const cancelAppointment = async (appointmentId: number): Promise<any> => {
   const response = await api.delete(`/appointments/${appointmentId}`);
-
   return response.data;
 };
 
@@ -123,5 +122,94 @@ export const updateAppointmentStatus = async (
   status: 'scheduled' | 'completed' | 'cancelled'
 ): Promise<any> => {
   const response = await api.put(`/appointments/${appointmentId}/status`, { status });
+  return response.data;
+};
+
+// Buscar todos os barbeiros
+export const getBarbers = async (): Promise<User[]> => {
+  const response = await api.get('/barbers');
+  return response.data;
+};
+
+// Buscar serviços de um barbeiro
+export const getServicesByBarber = async (barberId: number): Promise<Service[]> => {
+  const response = await api.get(`/services/${barberId}`);
+  return response.data;
+};
+
+// Buscar horários disponíveis
+export const getAvailableTimes = async (barberId: number, date: string): Promise<string[]> => {
+  const response = await api.get(`/available-times/${barberId}/${date}`);
+  return response.data;
+};
+
+// Criar novo agendamento
+export const createAppointment = async (appointmentData: {
+  client_id: number;
+  barber_id: number;
+  service_id: number;
+  appointment_date: string;
+  notes?: string;
+}): Promise<any> => {
+  const response = await api.post('/appointments', appointmentData);
+  return response.data;
+};
+
+// Criar novo serviço
+export const createService = async (serviceData: {
+  name: string;
+  description?: string;
+  price: number;
+  duration: number;
+  barber_id: number;
+}): Promise<any> => {
+  const response = await api.post('/services', serviceData);
+  return response.data;
+};
+
+// Atualizar serviço
+export const updateService = async (serviceId: number, data: {
+  name?: string;
+  description?: string;
+  price?: number;
+  duration?: number;
+  active?: boolean;
+}): Promise<any> => {
+  const response = await api.put(`/services/${serviceId}`, data);
+  return response.data;
+};
+
+// Deletar serviço (soft delete)
+export const deleteService = async (serviceId: number): Promise<any> => {
+  const response = await api.delete(`/services/${serviceId}`);
+  return response.data;
+};
+
+// Buscar horários de trabalho do barbeiro
+export const getBarberSchedule = async (barberId: number): Promise<any[]> => {
+  const response = await api.get(`/schedules/${barberId}`);
+  return response.data;
+};
+
+// Criar horário de trabalho
+export const createSchedule = async (scheduleData: {
+  barber_id: number;
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
+}): Promise<any> => {
+  const response = await api.post('/schedules', scheduleData);
+  return response.data;
+};
+
+// Atualizar horário de trabalho
+export const updateSchedule = async (scheduleId: number, data: any): Promise<any> => {
+  const response = await api.put(`/schedules/${scheduleId}`, data);
+  return response.data;
+};
+
+// Criar horários padrão para barbeiro
+export const createDefaultSchedule = async (barberId: number): Promise<any> => {
+  const response = await api.post(`/schedules/${barberId}/default`);
   return response.data;
 };
