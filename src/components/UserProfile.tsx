@@ -1,17 +1,27 @@
-import { Form, Input, Button, message, Avatar, Spin, Card, Divider, Upload, Modal } from "antd";
-import { 
-  EditOutlined, 
-  LoadingOutlined, 
-  UserOutlined, 
-  MailOutlined, 
-  PhoneOutlined, 
+import {
+  Form,
+  Input,
+  Button,
+  message,
+  Avatar,
+  Spin,
+  Card,
+  Upload,
+  Modal,
+} from "antd";
+import {
+  EditOutlined,
+  LoadingOutlined,
+  UserOutlined,
+  MailOutlined,
+  PhoneOutlined,
   LockOutlined,
   SaveOutlined,
   CameraOutlined,
   EyeOutlined,
   EyeInvisibleOutlined,
   UploadOutlined,
-  DeleteOutlined
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getCurrentUser, updateUser } from "../Services/api";
@@ -34,7 +44,6 @@ function UserProfile() {
   const [showPassword, setShowPassword] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [avatarModalVisible, setAvatarModalVisible] = useState(false);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   // Carregar dados do usuário
   useEffect(() => {
@@ -51,17 +60,17 @@ function UserProfile() {
 
         const userData = await getCurrentUser();
         setUser(userData);
-        
+
         // Se o usuário tem avatar customizado, usar ele
         if (userData.avatar_url) {
           setAvatarUrl(userData.avatar_url);
         }
-        
+
         form.setFieldsValue({
           name: userData.name,
           email: userData.email,
           phone: userData.phone,
-          password: ""
+          password: "",
         });
       } catch (error) {
         console.error("Erro ao carregar dados do usuário:", error);
@@ -107,7 +116,7 @@ function UserProfile() {
       if (values.password && values.password.trim()) {
         updateData.password = values.password;
       }
-      
+
       // Se o avatar foi alterado, incluir no update
       if (avatarUrl !== (user.avatar_url || null)) {
         updateData.avatar_url = avatarUrl || undefined; // Convert null to undefined
@@ -122,15 +131,18 @@ function UserProfile() {
       message.success("Perfil atualizado com sucesso!");
 
       // Atualizar estado local - handle null to undefined conversion
-      const updatedUser: User = { 
-        ...user, 
+      const updatedUser: User = {
+        ...user,
         ...updateData,
         // Ensure avatar_url is properly typed
-        avatar_url: updateData.avatar_url !== undefined ? updateData.avatar_url : user.avatar_url
+        avatar_url:
+          updateData.avatar_url !== undefined
+            ? updateData.avatar_url
+            : user.avatar_url,
       };
       delete (updatedUser as any).password; // Não manter senha no estado
       setUser(updatedUser);
-      
+
       // Atualizar avatar local se foi alterado
       if (updateData.avatar_url !== undefined) {
         setAvatarUrl(updateData.avatar_url || null);
@@ -150,7 +162,10 @@ function UserProfile() {
       form.setFieldValue("password", "");
     } catch (error: any) {
       console.error("Erro ao atualizar o perfil:", error);
-      const errorMessage = error.response?.data?.error || error.error || "Erro ao atualizar o perfil";
+      const errorMessage =
+        error.response?.data?.error ||
+        error.error ||
+        "Erro ao atualizar o perfil";
       message.error(errorMessage);
     } finally {
       setUpdating(false);
@@ -166,18 +181,18 @@ function UserProfile() {
 
   const handleCancelEdit = () => {
     if (!user) return;
-    
+
     // Restaurar valores originais
     form.setFieldsValue({
       name: user.name,
       email: user.email,
       phone: user.phone,
-      password: ""
+      password: "",
     });
-    
+
     // Restaurar avatar original
     setAvatarUrl(user.avatar_url || null);
-    
+
     // Desabilitar todos os campos
     setEditEnabled({
       name: false,
@@ -185,22 +200,22 @@ function UserProfile() {
       phone: false,
       password: false,
     });
-    
+
     setIsTouched(false);
     setShowPassword(false); // Reset password visibility
   };
 
   // Função para lidar com upload de avatar
   const handleAvatarUpload = (file: File) => {
-    const isImage = file.type.startsWith('image/');
+    const isImage = file.type.startsWith("image/");
     if (!isImage) {
-      message.error('Você só pode fazer upload de arquivos de imagem!');
+      message.error("Você só pode fazer upload de arquivos de imagem!");
       return false;
     }
 
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.error('A imagem deve ter menos de 2MB!');
+      message.error("A imagem deve ter menos de 2MB!");
       return false;
     }
 
@@ -228,25 +243,29 @@ function UserProfile() {
     if (avatarUrl) {
       return avatarUrl;
     }
-    return `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=F6DA5E&color=232225&size=300`;
+    return `https://ui-avatars.com/api/?name=${user?.name || "User"}&background=F6DA5E&color=232225&size=300`;
   };
 
   if (loading) {
     return (
-      <div 
+      <div
         className="flex justify-center items-center h-96 rounded-3xl border border-gray-800"
-        style={{ backgroundColor: '#0a0a0a' }}
+        style={{ backgroundColor: "#0a0a0a" }}
       >
-        <Spin indicator={<LoadingOutlined style={{ fontSize: 48, color: '#F6DA5E' }} spin />} />
+        <Spin
+          indicator={
+            <LoadingOutlined style={{ fontSize: 48, color: "#F6DA5E" }} spin />
+          }
+        />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div 
+      <div
         className="flex justify-center items-center h-96 rounded-3xl border border-gray-800"
-        style={{ backgroundColor: '#0a0a0a' }}
+        style={{ backgroundColor: "#0a0a0a" }}
       >
         <p className="text-gray-300">Erro ao carregar dados do usuário</p>
       </div>
@@ -254,20 +273,18 @@ function UserProfile() {
   }
 
   return (
-    <div 
+    <div
       className="rounded-3xl border border-gray-800 overflow-hidden"
-      style={{ backgroundColor: '#0a0a0a' }}
+      style={{ backgroundColor: "#0a0a0a" }}
     >
       {/* Header */}
-      <div 
+      <div
         className="p-6 border-b border-gray-800"
-        style={{ backgroundColor: '#070707' }}
+        style={{ backgroundColor: "#070707" }}
       >
         <div className="flex items-center gap-3 mb-2">
           <div className="w-1 h-8 bg-gradient-to-b from-yellow-400 to-yellow-600 rounded-full"></div>
-          <h1 className="text-yellow-400 text-3xl font-bold">
-            Meu Perfil
-          </h1>
+          <h1 className="text-yellow-400 text-3xl font-bold">Meu Perfil</h1>
         </div>
         <p className="text-gray-400">
           Gerencie suas informações pessoais e configurações da conta
@@ -285,8 +302,8 @@ function UserProfile() {
                 src={getAvatarUrl()}
                 className="ring-4 ring-yellow-400/30 transition-all duration-300 group-hover:ring-yellow-400/50 "
                 style={{
-                  width: '120px',
-                  height: '120px'
+                  width: "120px",
+                  height: "120px",
                 }}
               />
               {user.type === "barber" && (
@@ -294,25 +311,27 @@ function UserProfile() {
                   BARBEIRO
                 </div>
               )}
-              <div 
+              <div
                 className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
                 onClick={() => setAvatarModalVisible(true)}
               >
                 <CameraOutlined className="text-white text-xl" />
               </div>
             </div>
-            
+
             <div className="mt-4 text-center lg:text-left">
               <h2 className="text-2xl font-bold text-gray-200 mb-1">
                 {user.name}
               </h2>
               <div className="flex items-center gap-2 justify-center lg:justify-start">
-                <div className={`w-2 h-2 rounded-full ${user.type === 'barber' ? 'bg-yellow-400' : 'bg-blue-400'}`}></div>
+                <div
+                  className={`w-2 h-2 rounded-full ${user.type === "barber" ? "bg-yellow-400" : "bg-blue-400"}`}
+                ></div>
                 <p className="text-gray-400 font-medium">
                   {user.type === "barber" ? "Profissional" : "Cliente"}
                 </p>
               </div>
-              
+
               <Button
                 type="link"
                 size="small"
@@ -337,11 +356,11 @@ function UserProfile() {
               {/* Name Field */}
               <Card
                 className="border-gray-800 transition-all duration-300 hover:border-gray-700"
-                bodyStyle={{ 
-                  padding: '20px',
-                  backgroundColor: '#070707'
+                bodyStyle={{
+                  padding: "20px",
+                  backgroundColor: "#070707",
                 }}
-                style={{ backgroundColor: '#070707' }}
+                style={{ backgroundColor: "#070707" }}
               >
                 <Form.Item
                   label={
@@ -365,12 +384,14 @@ function UserProfile() {
                     style={{
                       backgroundColor: editEnabled.name ? "#0a0a0a" : "#050505",
                       color: "#ffffff",
-                      borderColor: editEnabled.name ? "#F6DA5E" : "#374151"
+                      borderColor: editEnabled.name ? "#F6DA5E" : "#374151",
                     }}
                     suffix={
                       <EditOutlined
                         className={`cursor-pointer transition-colors ${
-                          editEnabled.name ? 'text-yellow-400' : 'text-gray-500 hover:text-yellow-400'
+                          editEnabled.name
+                            ? "text-yellow-400"
+                            : "text-gray-500 hover:text-yellow-400"
                         }`}
                         onClick={() => handleEditClick("name")}
                       />
@@ -382,11 +403,11 @@ function UserProfile() {
               {/* Email Field */}
               <Card
                 className="border-gray-800 transition-all duration-300 hover:border-gray-700"
-                bodyStyle={{ 
-                  padding: '20px',
-                  backgroundColor: '#070707'
+                bodyStyle={{
+                  padding: "20px",
+                  backgroundColor: "#070707",
                 }}
-                style={{ backgroundColor: '#070707' }}
+                style={{ backgroundColor: "#070707" }}
               >
                 <Form.Item
                   label={
@@ -408,14 +429,18 @@ function UserProfile() {
                     size="large"
                     autoComplete="email"
                     style={{
-                      backgroundColor: editEnabled.email ? "#0a0a0a" : "#050505",
+                      backgroundColor: editEnabled.email
+                        ? "#0a0a0a"
+                        : "#050505",
                       color: "#ffffff",
-                      borderColor: editEnabled.email ? "#F6DA5E" : "#374151"
+                      borderColor: editEnabled.email ? "#F6DA5E" : "#374151",
                     }}
                     suffix={
                       <EditOutlined
                         className={`cursor-pointer transition-colors ${
-                          editEnabled.email ? 'text-yellow-400' : 'text-gray-500 hover:text-yellow-400'
+                          editEnabled.email
+                            ? "text-yellow-400"
+                            : "text-gray-500 hover:text-yellow-400"
                         }`}
                         onClick={() => handleEditClick("email")}
                       />
@@ -427,11 +452,11 @@ function UserProfile() {
               {/* Phone Field */}
               <Card
                 className="border-gray-800 transition-all duration-300 hover:border-gray-700"
-                bodyStyle={{ 
-                  padding: '20px',
-                  backgroundColor: '#070707'
+                bodyStyle={{
+                  padding: "20px",
+                  backgroundColor: "#070707",
                 }}
-                style={{ backgroundColor: '#070707' }}
+                style={{ backgroundColor: "#070707" }}
               >
                 <Form.Item
                   label={
@@ -453,14 +478,18 @@ function UserProfile() {
                     placeholder="(00) 00000-0000"
                     autoComplete="tel"
                     style={{
-                      backgroundColor: editEnabled.phone ? "#0a0a0a" : "#050505",
+                      backgroundColor: editEnabled.phone
+                        ? "#0a0a0a"
+                        : "#050505",
                       color: "#ffffff",
-                      borderColor: editEnabled.phone ? "#F6DA5E" : "#374151"
+                      borderColor: editEnabled.phone ? "#F6DA5E" : "#374151",
                     }}
                     suffix={
                       <EditOutlined
                         className={`cursor-pointer transition-colors ${
-                          editEnabled.phone ? 'text-yellow-400' : 'text-gray-500 hover:text-yellow-400'
+                          editEnabled.phone
+                            ? "text-yellow-400"
+                            : "text-gray-500 hover:text-yellow-400"
                         }`}
                         onClick={() => handleEditClick("phone")}
                       />
@@ -472,11 +501,11 @@ function UserProfile() {
               {/* Password Field */}
               <Card
                 className="border-gray-800 transition-all duration-300 hover:border-gray-700"
-                bodyStyle={{ 
-                  padding: '20px',
-                  backgroundColor: '#070707'
+                bodyStyle={{
+                  padding: "20px",
+                  backgroundColor: "#070707",
                 }}
-                style={{ backgroundColor: '#070707' }}
+                style={{ backgroundColor: "#070707" }}
               >
                 <Form.Item
                   label={
@@ -491,10 +520,13 @@ function UserProfile() {
                     { max: 20, message: "Máximo 20 caracteres" },
                     {
                       validator: (_, value) => {
-                        if (!value || !editEnabled.password) return Promise.resolve();
+                        if (!value || !editEnabled.password)
+                          return Promise.resolve();
                         if (!/(?=.*[A-Z])/.test(value)) {
                           return Promise.reject(
-                            new Error("Deve conter ao menos uma letra maiúscula")
+                            new Error(
+                              "Deve conter ao menos uma letra maiúscula"
+                            )
                           );
                         }
                         if (!/(?=.*\d)/.test(value)) {
@@ -516,43 +548,51 @@ function UserProfile() {
                       placeholder="Deixe em branco para manter a atual"
                       autoComplete="new-password"
                       style={{
-                        backgroundColor: editEnabled.password ? "#0a0a0a" : "#050505",
+                        backgroundColor: editEnabled.password
+                          ? "#0a0a0a"
+                          : "#050505",
                         color: "#ffffff",
-                        borderColor: editEnabled.password ? "#F6DA5E" : "#374151",
-                        paddingRight: "80px"
+                        borderColor: editEnabled.password
+                          ? "#F6DA5E"
+                          : "#374151",
+                        paddingRight: "80px",
                       }}
                     />
-                    
+
                     {/* Show/Hide Password Button */}
                     {editEnabled.password && (
-  <div 
-    className="absolute right-12 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer p-1"
-    onClick={() => setShowPassword(!showPassword)}
-  >
-    {showPassword ? (
-      <EyeInvisibleOutlined 
-        className="text-gray-400 hover:text-yellow-400 transition-colors text-base"
-        style={{ color: '#9CA3AF' }} // ← ADICIONE ESTA LINHA
-      />
-    ) : (
-      <EyeOutlined 
-        className="text-gray-400 hover:text-yellow-400 transition-colors text-base"
-        style={{ color: '#9CA3AF' }} // ← ADICIONE ESTA LINHA
-      />
-    )}
-  </div>
+                      <div
+                        className="absolute right-12 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer p-1"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <EyeInvisibleOutlined
+                            className="text-gray-400 hover:text-yellow-400 transition-colors text-base"
+                            style={{ color: "#9CA3AF" }}
+                          />
+                        ) : (
+                          <EyeOutlined
+                            className="text-gray-400 hover:text-yellow-400 transition-colors text-base"
+                            style={{ color: "#9CA3AF" }}
+                          />
+                        )}
+                      </div>
                     )}
-                    
+
                     {/* Edit Button */}
-                    <div 
+                    <div
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer p-1"
                       onClick={() => handleEditClick("password")}
                     >
                       <EditOutlined
                         className={`transition-colors text-base ${
-                          editEnabled.password ? 'text-yellow-400' : 'text-gray-400 hover:text-yellow-400'
+                          editEnabled.password
+                            ? "text-yellow-400"
+                            : "text-gray-400 hover:text-yellow-400"
                         }`}
-                        style={{ color: editEnabled.password ? '#F6DA5E' : '#9CA3AF' }}
+                        style={{
+                          color: editEnabled.password ? "#F6DA5E" : "#9CA3AF",
+                        }}
                       />
                     </div>
                   </div>
@@ -569,7 +609,7 @@ function UserProfile() {
                     style={{
                       backgroundColor: "#374151",
                       borderColor: "#374151",
-                      color: "#ffffff"
+                      color: "#ffffff",
                     }}
                   >
                     Cancelar
@@ -584,7 +624,7 @@ function UserProfile() {
                     style={{
                       backgroundColor: "#F6DA5E",
                       borderColor: "#F6DA5E",
-                      color: "#232225"
+                      color: "#232225",
                     }}
                   >
                     Salvar Alterações
@@ -596,8 +636,9 @@ function UserProfile() {
             {/* Help Text */}
             <div className="mt-6 p-4 bg-blue-900/10 border border-blue-500/20 rounded-lg">
               <p className="text-blue-300 text-sm">
-                💡 <strong>Dica:</strong> Clique no ícone de edição ao lado de cada campo para habilitá-lo. 
-                Suas alterações só serão salvas quando você clicar em "Salvar Alterações".
+                💡 <strong>Dica:</strong> Clique no ícone de edição ao lado de
+                cada campo para habilitá-lo. Suas alterações só serão salvas
+                quando você clicar em "Salvar Alterações".
               </p>
             </div>
           </div>
@@ -616,12 +657,14 @@ function UserProfile() {
         onCancel={() => setAvatarModalVisible(false)}
         footer={null}
         width={400}
-        style={{
-          '--ant-modal-content-bg': '#0a0a0a',
-          '--ant-modal-header-bg': '#0a0a0a'
-        } as React.CSSProperties}
+        style={
+          {
+            "--ant-modal-content-bg": "#0a0a0a",
+            "--ant-modal-header-bg": "#0a0a0a",
+          } as React.CSSProperties
+        }
       >
-        <div className="space-y-4" style={{ backgroundColor: '#0a0a0a' }}>
+        <div className="space-y-4" style={{ backgroundColor: "#0a0a0a" }}>
           {/* Preview atual */}
           <div className="text-center">
             <Avatar
@@ -645,7 +688,6 @@ function UserProfile() {
                 icon={<UploadOutlined />}
                 size="large"
                 className="w-full h-12 bg-yellow-400 border-yellow-400 text-black hover:bg-yellow-500"
-                loading={uploadingAvatar}
               >
                 Escolher Nova Foto
               </Button>
@@ -670,7 +712,7 @@ function UserProfile() {
               style={{
                 backgroundColor: "#374151",
                 borderColor: "#374151",
-                color: "#ffffff"
+                color: "#ffffff",
               }}
             >
               Cancelar
@@ -679,8 +721,8 @@ function UserProfile() {
 
           <div className="bg-blue-900/10 border border-blue-500/20 rounded-lg p-3">
             <p className="text-blue-300 text-xs">
-              📸 <strong>Dicas:</strong> Use imagens quadradas para melhor resultado. 
-              Tamanho máximo: 2MB. Formatos aceitos: JPG, PNG, GIF.
+              📸 <strong>Dicas:</strong> Use imagens quadradas para melhor
+              resultado. Tamanho máximo: 2MB. Formatos aceitos: JPG, PNG, GIF.
             </p>
           </div>
         </div>
@@ -692,7 +734,7 @@ function UserProfile() {
 export default UserProfile;
 
 // CSS global para corrigir autocomplete e outros problemas do Ant Design
-if (typeof document !== 'undefined') {
+if (typeof document !== "undefined") {
   const globalStyles = `
     /* Corrigir autocomplete do navegador */
     .ant-input:-webkit-autofill,
@@ -768,16 +810,16 @@ if (typeof document !== 'undefined') {
       transition: all 0.3s ease !important;
     }
   `;
-  
+
   // Remove estilo anterior se existir
-  const existingStyle = document.getElementById('user-profile-styles');
+  const existingStyle = document.getElementById("user-profile-styles");
   if (existingStyle) {
     existingStyle.remove();
   }
-  
+
   // Adicionar novos estilos
-  const styleElement = document.createElement('style');
-  styleElement.id = 'user-profile-styles';
+  const styleElement = document.createElement("style");
+  styleElement.id = "user-profile-styles";
   styleElement.textContent = globalStyles;
   document.head.appendChild(styleElement);
 }
