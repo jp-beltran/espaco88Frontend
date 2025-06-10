@@ -252,8 +252,43 @@ export const updateUser = async (
 ): Promise<any> => {
   try {
     console.log("🔄 Enviando dados para atualização:", data);
+    
+    // ⭐ IMPORTANTE: Filtrar campos vazios que não devem ser enviados
+    const filteredData: Record<string, any> = {};
+    
+    // Só incluir campos que realmente foram preenchidos
+    if (data.name && data.name.trim() !== '') {
+      filteredData.name = data.name.trim();
+    }
+    
+    if (data.email && data.email.trim() !== '') {
+      filteredData.email = data.email.trim();
+    }
+    
+    if (data.phone && data.phone.trim() !== '') {
+      filteredData.phone = data.phone.trim();
+    }
+    
+    if (data.password && data.password.trim() !== '') {
+      filteredData.password = data.password;
+    }
+    
+    // ⭐ NOVO: Incluir avatar_url mesmo se for null/vazio (para remoção)
+    if ('avatar_url' in data) {
+      filteredData.avatar_url = data.avatar_url;
+    }
+    
+    console.log("📤 Dados filtrados sendo enviados:", filteredData);
+    
+    // Verificar se há pelo menos um campo para atualizar
+    if (Object.keys(filteredData).length === 0) {
+      throw {
+        error: "Nenhum campo válido foi fornecido para atualização",
+        status: 400
+      };
+    }
 
-    const response = await api.put(`/users/${userId}`, data);
+    const response = await api.put(`/users/${userId}`, filteredData);
 
     console.log("✅ Resposta do servidor:", response.data);
     return response.data;
@@ -271,6 +306,36 @@ export const updateUser = async (
       };
     }
     throw { error: "Erro desconhecido" };
+  }
+};
+
+export const updateUserAvatar = async (
+  userId: number,
+  avatarUrl: string | null
+): Promise<any> => {
+  try {
+    console.log("🖼️ Atualizando avatar do usuário...", { userId, avatarUrl });
+    
+    const response = await api.put(`/users/${userId}`, {
+      avatar_url: avatarUrl
+    });
+
+    console.log("✅ Avatar atualizado:", response.data);
+    return response.data;
+  } catch (error: unknown) {
+    console.error("❌ Erro ao atualizar avatar:", error);
+
+    if (axios.isAxiosError(error)) {
+      const errorData = error.response?.data;
+      const errorMessage = errorData?.error || "Erro ao atualizar avatar";
+
+      throw {
+        error: errorMessage,
+        status: error.response?.status,
+        details: errorData,
+      };
+    }
+    throw { error: "Erro desconhecido ao atualizar avatar" };
   }
 };
 
