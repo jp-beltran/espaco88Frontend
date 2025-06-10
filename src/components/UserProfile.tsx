@@ -77,6 +77,7 @@ function UserProfile() {
   // Detectar alterações no formulário
   const onValuesChange = (changedValues: any, allValues: any) => {
     if (!user) return;
+    console.log("Campos alterados:", changedValues);
 
     const hasChanges =
       allValues.name !== user.name ||
