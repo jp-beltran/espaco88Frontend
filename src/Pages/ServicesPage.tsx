@@ -378,42 +378,7 @@ function ServicesPage() {
           </Form>
         </Modal>
 
-        <style >{`
-          .services-table .ant-table {
-            background-color: transparent;
-          }
-          
-          .services-table .ant-table-thead > tr > th {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            border-bottom: 1px solid #4a4a4a;
-          }
-          
-          .services-table .ant-table-tbody > tr > td {
-            border-bottom: 1px solid #2a2a2a;
-          }
-          
-          .services-table .ant-table-tbody > tr:hover > td {
-            background-color: #2a2a2a;
-          }
-          
-          .ant-modal-content {
-            background-color: #232225;
-          }
-          
-          .ant-modal-header {
-            background-color: #232225;
-            border-bottom: 1px solid #4a4a4a;
-          }
-          
-          .ant-modal-title {
-            color: #ffffff;
-          }
-          
-          .ant-form-item-label > label {
-            color: #ffffff;
-          }
-        `}</style>
+   
       </div>
     </ConfigProvider>
   );

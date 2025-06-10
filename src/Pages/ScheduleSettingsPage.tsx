@@ -13,14 +13,18 @@ import {
   ConfigProvider,
   theme,
   Form,
-  Modal
+  Modal,
+  Popconfirm,
+  Tooltip
 } from "antd";
 import {
   ArrowLeftOutlined,
   ClockCircleOutlined,
   LoadingOutlined,
   SaveOutlined,
-  PlusOutlined
+  PlusOutlined,
+  DeleteOutlined,
+  QuestionCircleOutlined
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { getBarberSchedule, createSchedule, updateSchedule, createDefaultSchedule } from "../Services/api";
@@ -51,6 +55,8 @@ function ScheduleSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<Schedule | null>(null);
+  const [toggleLoadingIds, setToggleLoadingIds] = useState<Set<number>>(new Set());
+  const [deletingIds, setDeletingIds] = useState<Set<number>>(new Set());
   const [form] = Form.useForm();
   
   const barberId = parseInt(localStorage.getItem('userId') || '0');
@@ -70,7 +76,9 @@ function ScheduleSettingsPage() {
     try {
       setLoading(true);
       const data = await getBarberSchedule(barberId);
-      setSchedules(data);
+      // Ordenar por dia da semana para melhor visualização
+      const sortedData = data.sort((a, b) => a.day_of_week - b.day_of_week);
+      setSchedules(sortedData);
     } catch (error) {
       console.error("Erro ao buscar horários:", error);
       message.error("Erro ao carregar horários");
@@ -135,15 +143,89 @@ function ScheduleSettingsPage() {
   };
 
   const handleToggleActive = async (schedule: Schedule) => {
+    if (!schedule.id) return;
+    
+    const scheduleId = schedule.id;
+    // Garantir que temos um valor booleano válido
+    const currentValue = schedule.active === true;
+    const newActiveValue = !currentValue;
+    
+    console.log(`Toggling schedule ${scheduleId}: ${currentValue} -> ${newActiveValue}`);
+    
+    // Adicionar loading para este switch específico
+    setToggleLoadingIds(prev => new Set(prev).add(scheduleId));
+    
+    // Atualização otimista: atualizar UI imediatamente
+    setSchedules(prevSchedules => 
+      prevSchedules.map(s => 
+        s.id === scheduleId 
+          ? { ...s, active: newActiveValue }
+          : s
+      )
+    );
+
     try {
-      if (schedule.id) {
-        await updateSchedule(schedule.id, { active: !schedule.active });
-        message.success("Status atualizado com sucesso!");
-        fetchSchedules();
-      }
+      // Fazer a requisição para o servidor
+      await updateSchedule(scheduleId, { active: newActiveValue });
+      
+      // Buscar dados atualizados do servidor para garantir sincronização
+      const updatedData = await getBarberSchedule(barberId);
+      const sortedData = updatedData.sort((a, b) => a.day_of_week - b.day_of_week);
+      setSchedules(sortedData);
+      
     } catch (error) {
       console.error("Erro ao atualizar status:", error);
+      
+      // Reverter a mudança otimista em caso de erro
+      setSchedules(prevSchedules => 
+        prevSchedules.map(s => 
+          s.id === scheduleId 
+            ? { ...s, active: currentValue } // Reverter para valor original
+            : s
+        )
+      );
+      
       message.error("Erro ao atualizar status");
+    } finally {
+      // Remover loading após 300ms
+      setTimeout(() => {
+        setToggleLoadingIds(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(scheduleId);
+          return newSet;
+        });
+      }, 300);
+    }
+  };
+
+  const handleDeleteSchedule = async (schedule: Schedule) => {
+    if (!schedule.id) return;
+    
+    const scheduleId = schedule.id;
+    
+    try {
+      setDeletingIds(prev => new Set(prev).add(scheduleId));
+      
+      // Implementar endpoint de exclusão definitiva no backend
+      // Por enquanto, vamos usar o update com um flag especial
+      await updateSchedule(scheduleId, { deleted: true });
+      
+      // Remover da lista local
+      setSchedules(prevSchedules => 
+        prevSchedules.filter(s => s.id !== scheduleId)
+      );
+      
+      message.success("Horário removido com sucesso!");
+      
+    } catch (error) {
+      console.error("Erro ao excluir horário:", error);
+      message.error("Erro ao excluir horário");
+    } finally {
+      setDeletingIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(scheduleId);
+        return newSet;
+      });
     }
   };
 
@@ -171,29 +253,78 @@ function ScheduleSettingsPage() {
       )
     },
     {
-      title: 'Ativo',
+      title: 'Status',
       dataIndex: 'active',
       key: 'active',
-      render: (_: any, record: Schedule) => (
-        <Switch
-          checked={record.active !== false}
-          onChange={() => handleToggleActive(record)}
-          checkedChildren="Sim"
-          unCheckedChildren="Não"
-        />
-      )
+      width: 120,
+      render: (active: boolean, record: Schedule) => {
+        const isActive = active === true;
+        
+        return (
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={isActive}
+              onChange={() => handleToggleActive(record)}
+              loading={toggleLoadingIds.has(record.id!)}
+              size="small"
+            />
+            <Tooltip title={isActive ? "Disponível para agendamentos" : "Indisponível (férias/folga)"}>
+              <QuestionCircleOutlined className="text-gray-400" />
+            </Tooltip>
+          </div>
+        );
+      }
     },
     {
       title: 'Ações',
       key: 'actions',
+      width: 150,
       render: (_: any, record: Schedule) => (
-        <Button
-          type="text"
-          onClick={() => handleEdit(record)}
-          className="text-yellow-400 hover:text-yellow-300"
-        >
-          Editar
-        </Button>
+        <Space>
+          <Tooltip title="Editar horário">
+            <Button
+              type="text"
+              onClick={() => handleEdit(record)}
+              className="text-yellow-400 hover:text-yellow-300"
+              size="small"
+            >
+              Editar
+            </Button>
+          </Tooltip>
+          
+          <Popconfirm
+            title="Excluir horário"
+            description={
+              <div>
+                <p>Tem certeza que deseja <strong>excluir</strong> este horário?</p>
+                <p className="text-red-500 text-sm mt-1">
+                  ⚠️ Esta ação é irreversível!
+                </p>
+                <p className="text-gray-500 text-xs mt-1">
+                  Dica: Use o switch para desativar temporariamente
+                </p>
+              </div>
+            }
+            onConfirm={() => handleDeleteSchedule(record)}
+            okText="Sim, excluir"
+            cancelText="Cancelar"
+            okButtonProps={{ 
+              danger: true,
+              loading: deletingIds.has(record.id!)
+            }}
+            icon={<DeleteOutlined style={{ color: 'red' }} />}
+          >
+            <Tooltip title="Excluir permanentemente">
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+                size="small"
+                loading={deletingIds.has(record.id!)}
+              />
+            </Tooltip>
+          </Popconfirm>
+        </Space>
       )
     }
   ];
@@ -293,14 +424,32 @@ function ScheduleSettingsPage() {
             <Card className="bg-[#1a1a1a] border-gray-700 mt-4">
               <h3 className="text-white font-semibold mb-2">
                 <ClockCircleOutlined className="mr-2" />
-                Informações Importantes
+                Como funciona o sistema de horários
               </h3>
-              <ul className="text-gray-400 space-y-1 list-disc list-inside">
-                <li>Os horários configurados definem quando você está disponível para atendimentos</li>
-                <li>Clientes só poderão agendar nos dias e horários ativos</li>
-                <li>Cada agendamento ocupará slots de 30 minutos</li>
-                <li>Você pode desativar temporariamente um dia usando o switch "Ativo"</li>
-              </ul>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-yellow-400 font-medium mb-2">🕒 Configuração de Horários</h4>
+                  <ul className="text-gray-400 space-y-1 text-sm">
+                    <li>• Configure seus dias e horários de trabalho</li>
+                    <li>• Cada agendamento ocupa slots de 30 minutos</li>
+                    <li>• Clientes só podem agendar nos horários ativos</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-green-400 font-medium mb-2">🎛️ Controles Disponíveis</h4>
+                  <ul className="text-gray-400 space-y-1 text-sm">
+                    <li>• <strong>Switch:</strong> Ativar/desativar temporariamente (férias, folgas)</li>
+                    <li>• <strong>Editar:</strong> Alterar horários de início e término</li>
+                    <li>• <strong>Lixeira:</strong> Excluir permanentemente o horário</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded">
+                <p className="text-blue-300 text-sm">
+                  💡 <strong>Dica:</strong> Para férias ou folgas temporárias, use o switch para desativar. 
+                  Use a exclusão apenas quando não quiser mais trabalhar naquele dia/horário definitivamente.
+                </p>
+              </div>
             </Card>
           )}
         </div>
@@ -396,29 +545,7 @@ function ScheduleSettingsPage() {
           </Form>
         </Modal>
 
-        <style >{`
-          .schedule-table .ant-table {
-            background-color: transparent;
-          }
-          
-          .schedule-table .ant-table-thead > tr > th {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            border-bottom: 1px solid #4a4a4a;
-          }
-          
-          .schedule-table .ant-table-tbody > tr > td {
-            border-bottom: 1px solid #2a2a2a;
-          }
-          
-          .schedule-table .ant-table-tbody > tr:hover > td {
-            background-color: #2a2a2a;
-          }
-          
-          .ant-switch-checked {
-            background-color: #F6DA5E;
-          }
-        `}</style>
+
       </div>
     </ConfigProvider>
   );

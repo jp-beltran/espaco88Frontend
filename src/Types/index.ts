@@ -6,6 +6,7 @@ export interface User {
   email: string;
   phone: string;
   type: 'barber' | 'client';
+  avatar_url?: string | null;
 }
 
 export interface Service {
@@ -35,4 +36,5 @@ export interface UpdateUserData {
   email?: string;
   phone?: string;
   password?: string;
+  avatar_url?: string | null;
 }

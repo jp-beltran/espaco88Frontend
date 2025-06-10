@@ -81,8 +81,28 @@ export const loginUser = async (
 
 // Buscar dados do usuário atual
 export const getCurrentUser = async (): Promise<User> => {
-  const response = await api.get('/users/me');
-  return response.data;
+  try {
+    console.log('🔍 Buscando dados do usuário atual...');
+    
+    const response = await api.get('/users/me');
+    
+    console.log('✅ Dados do usuário carregados:', response.data);
+    return response.data;
+  } catch (error: unknown) {
+    console.error('❌ Erro ao buscar usuário:', error);
+    
+    if (axios.isAxiosError(error)) {
+      const errorData = error.response?.data;
+      const errorMessage = errorData?.error || "Erro ao carregar dados do usuário";
+      
+      throw {
+        error: errorMessage,
+        status: error.response?.status,
+        details: errorData
+      };
+    }
+    throw { error: "Erro desconhecido" };
+  }
 };
 
 // Buscar dados de um usuário específico
@@ -94,11 +114,24 @@ export const getUser = async (userId: number): Promise<User> => {
 // Atualizar dados do usuário
 export const updateUser = async (userId: number, data: UpdateUserData): Promise<any> => {
   try {
+    console.log('🔄 Enviando dados para atualização:', data);
+    
     const response = await api.put(`/users/${userId}`, data);
+    
+    console.log('✅ Resposta do servidor:', response.data);
     return response.data;
   } catch (error: unknown) {
+    console.error('❌ Erro na atualização:', error);
+    
     if (axios.isAxiosError(error)) {
-      throw error.response?.data || { error: "Erro na requisição" };
+      const errorData = error.response?.data;
+      const errorMessage = errorData?.error || "Erro na requisição";
+      
+      throw {
+        error: errorMessage,
+        status: error.response?.status,
+        details: errorData
+      };
     }
     throw { error: "Erro desconhecido" };
   }
