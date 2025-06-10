@@ -125,7 +125,10 @@ export const loginUser = async (
   password: string
 ): Promise<any> => {
   try {
-    console.log("🔐 Fazendo login...");
+    console.log("🔐 === INÍCIO DO LOGIN FRONTEND ===");
+    console.log(`📧 Email: ${email}`);
+    console.log(`🔒 Senha: ${"*".repeat(password.length)}`);
+    console.log(`🌐 API_URL: ${API_URL}`);
 
     // Testar conectividade primeiro
     const connectionTest = await testApiConnection();
@@ -135,23 +138,43 @@ export const loginUser = async (
       );
     }
 
-    const response = await api.post("/auth/login", {
-      email,
-      password,
+    const requestData = {
+      email: email.trim(),
+      password: password,
+    };
+
+    console.log("📤 Dados sendo enviados:", {
+      email: requestData.email,
+      password: "***",
     });
 
-    console.log("✅ Login bem-sucedido:", response.data);
+    const response = await api.post("/auth/login", requestData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      timeout: 10000, // 10 segundos
+    });
+
+    console.log("✅ Resposta recebida:", response.data);
+    console.log("📊 Status da resposta:", response.status);
 
     // Salvar o userId no localStorage quando o login for bem-sucedido
     if (response.data.user && response.data.user.id) {
       localStorage.setItem("userId", response.data.user.id.toString());
+      localStorage.setItem("token", response.data.token || "FAKE-TOKEN");
+      console.log("💾 Dados salvos no localStorage");
     }
 
     return response.data;
   } catch (error: unknown) {
-    console.error("❌ Erro no login:", error);
+    console.error("❌ === ERRO NO LOGIN ===", error);
 
     if (axios.isAxiosError(error)) {
+      console.error("📊 Status do erro:", error.response?.status);
+      console.error("📝 Dados do erro:", error.response?.data);
+      console.error("🌐 URL da requisição:", error.config?.url);
+      console.error("📋 Headers da resposta:", error.response?.headers);
+
       const errorData = error.response?.data;
 
       // Tratamento específico de erros de rede
