@@ -233,25 +233,30 @@ function NewAppointmentPage() {
       theme={{
         algorithm: theme.darkAlgorithm,
         token: {
-          colorPrimary: "#F6DA5E",
+          colorPrimary: "#9AA5B1",
+          colorBgContainer: "#323F4B",
+          colorBorder: "#3E4C59",
+          colorText: "#F5F7FA",
+          colorTextSecondary: "#CBD2D9",
+          colorBgBase: "#1F2933",
         },
       }}
     >
-      <div className="min-h-screen bg-[#070707] p-4 lg:p-10">
+      <div className="min-h-screen bg-primary p-4 lg:p-10">
         {/* Header */}
         <div className="max-w-5xl mx-auto mb-8">
           <Button
             icon={<ArrowLeftOutlined />}
             onClick={() => navigate('/user')}
-            className="mb-4 border-gray-600 text-gray-300 hover:text-white hover:border-white"
+            className="mb-4 btn-secondary"
           >
             Voltar
           </Button>
           
-          <h1 className="text-3xl lg:text-4xl font-bold text-yellow-400 mb-2">
+          <h1 className="text-3xl lg:text-4xl font-bold mb-2 text-primary">
             Novo Agendamento
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted">
             Siga os passos abaixo para agendar seu atendimento
           </p>
         </div>
@@ -270,7 +275,12 @@ function NewAppointmentPage() {
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <Spin 
-                indicator={<LoadingOutlined style={{ fontSize: 48, color: '#F6DA5E' }} spin />} 
+                indicator={
+                  <LoadingOutlined 
+                    className="text-5xl loading-spinner"
+                    spin 
+                  />
+                } 
               />
             </div>
           ) : (
@@ -278,14 +288,16 @@ function NewAppointmentPage() {
               {/* Step 1: Escolher Barbeiro */}
               {currentStep === 0 && (
                 <div>
-                  <h2 className="text-2xl font-semibold text-white mb-6">
+                  <h2 className="text-2xl font-semibold mb-6 text-primary">
                     Escolha o Barbeiro
                   </h2>
                   {barbers.length === 0 ? (
-                    <Card className="bg-[#232225] border-gray-700">
+                    <Card className="bg-card border-light">
                       <Empty 
                         description={
-                          <span className="text-gray-400">Nenhum barbeiro disponível</span>
+                          <span className="empty-description">
+                            Nenhum barbeiro disponível
+                          </span>
                         } 
                       />
                     </Card>
@@ -295,20 +307,20 @@ function NewAppointmentPage() {
                         <Col xs={24} sm={12} md={8} key={barber.id}>
                           <Card
                             hoverable
-                            className="bg-[#232225] border-gray-700 hover:border-yellow-400 transition-all cursor-pointer h-full"
+                            className="card-hover bg-card border-light cursor-pointer h-full"
                             onClick={() => handleBarberSelect(barber.id)}
                             bodyStyle={{ padding: '24px' }}
                           >
                             <div className="text-center">
                               <Avatar
                                 size={80}
-                                src={`https://ui-avatars.com/api/?name=${barber.name}&background=F6DA5E&color=232225&size=200`}
+                                src={barber.avatar_url || `https://ui-avatars.com/api/?name=${barber.name}&background=9AA5B1&color=1F2933&size=200`}
                                 className="mb-4"
                               />
-                              <h3 className="text-white font-semibold text-lg mb-2">
+                              <h3 className="font-semibold text-lg mb-2 text-primary">
                                 {barber.name}
                               </h3>
-                              <p className="text-gray-400 text-sm">
+                              <p className="text-sm text-muted">
                                 {barber.phone}
                               </p>
                             </div>
@@ -323,14 +335,16 @@ function NewAppointmentPage() {
               {/* Step 2: Escolher Serviço */}
               {currentStep === 1 && (
                 <div>
-                  <h2 className="text-2xl font-semibold text-white mb-6">
+                  <h2 className="text-2xl font-semibold mb-6 text-primary">
                     Escolha o Serviço
                   </h2>
                   {services.length === 0 ? (
-                    <Card className="bg-[#232225] border-gray-700">
+                    <Card className="bg-card border-light">
                       <Empty 
                         description={
-                          <span className="text-gray-400">Nenhum serviço disponível</span>
+                          <span className="empty-description">
+                            Nenhum serviço disponível
+                          </span>
                         } 
                       />
                     </Card>
@@ -340,16 +354,16 @@ function NewAppointmentPage() {
                         <Col xs={24} sm={12} key={service.id}>
                           <Card
                             hoverable
-                            className="bg-[#232225] border-gray-700 hover:border-yellow-400 transition-all cursor-pointer h-full"
+                            className="card-hover bg-card border-light cursor-pointer h-full"
                             onClick={() => handleServiceSelect(service.id)}
                             bodyStyle={{ padding: '24px' }}
                           >
                             <div>
-                              <h3 className="text-white font-semibold text-lg mb-2">
+                              <h3 className="font-semibold text-lg mb-2 text-primary">
                                 {service.name}
                               </h3>
                               {service.description && (
-                                <p className="text-gray-400 text-sm mb-3">
+                                <p className="text-sm mb-3 text-muted">
                                   {service.description}
                                 </p>
                               )}
@@ -368,7 +382,7 @@ function NewAppointmentPage() {
                     </Row>
                   )}
                   <Button 
-                    className="mt-4 border-gray-600 text-gray-300 hover:text-white hover:border-white"
+                    className="mt-4 btn-secondary"
                     onClick={() => setCurrentStep(0)}
                   >
                     Voltar
@@ -379,13 +393,13 @@ function NewAppointmentPage() {
               {/* Step 3: Escolher Data e Hora */}
               {currentStep === 2 && (
                 <div>
-                  <h2 className="text-2xl font-semibold text-white mb-6">
+                  <h2 className="text-2xl font-semibold mb-6 text-primary">
                     Escolha a Data e Hora
                   </h2>
-                  <Card className="bg-[#232225] border-gray-700 max-w-2xl">
+                  <Card className="max-w-2xl bg-card border-light">
                     <div className="space-y-6">
                       <div>
-                        <label className="block text-white font-semibold mb-2">
+                        <label className="block font-semibold mb-2 text-primary">
                           Data do Agendamento
                         </label>
                         <DatePicker
@@ -401,13 +415,13 @@ function NewAppointmentPage() {
 
                       {appointmentData.date && (
                         <div>
-                          <label className="block text-white font-semibold mb-2">
+                          <label className="block font-semibold mb-2 text-primary">
                             Horários Disponíveis
                           </label>
                           {availableTimes.length === 0 ? (
                             <Empty 
                               description={
-                                <span className="text-gray-400">
+                                <span className="empty-description">
                                   Nenhum horário disponível nesta data
                                 </span>
                               } 
@@ -418,13 +432,8 @@ function NewAppointmentPage() {
                               {availableTimes.map((time) => (
                                 <Button
                                   key={time}
-                                  type={appointmentData.time === time ? "primary" : "default"}
                                   onClick={() => handleTimeSelect(time)}
-                                  className={
-                                    appointmentData.time === time 
-                                      ? "bg-yellow-400 border-yellow-400 text-black hover:bg-yellow-500" 
-                                      : "border-gray-600 text-gray-300 hover:text-white hover:border-white"
-                                  }
+                                  className={`time-slot-button ${appointmentData.time === time ? 'selected' : ''}`}
                                 >
                                   {time}
                                 </Button>
@@ -435,7 +444,7 @@ function NewAppointmentPage() {
                       )}
 
                       <div>
-                        <label className="block text-white font-semibold mb-2">
+                        <label className="block font-semibold mb-2 text-primary">
                           Observações (opcional)
                         </label>
                         <TextArea
@@ -446,8 +455,7 @@ function NewAppointmentPage() {
                             ...appointmentData,
                             notes: e.target.value
                           })}
-                          className="bg-[#1a1a1a] text-white border-gray-600"
-                          style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}
+                          className="custom-textarea"
                         />
                       </div>
                     </div>
@@ -456,15 +464,14 @@ function NewAppointmentPage() {
                   <div className="flex gap-3 mt-4">
                     <Button 
                       onClick={() => setCurrentStep(1)}
-                      className="border-gray-600 text-gray-300 hover:text-white hover:border-white"
+                      className="btn-secondary"
                     >
                       Voltar
                     </Button>
                     <Button 
-                      type="primary"
                       disabled={!appointmentData.date || !appointmentData.time}
                       onClick={() => setCurrentStep(3)}
-                      className="bg-yellow-400 border-yellow-400 text-black hover:bg-yellow-500"
+                      className={`btn-primary-custom ${(!appointmentData.date || !appointmentData.time) ? 'disabled' : ''}`}
                     >
                       Continuar
                     </Button>
@@ -475,21 +482,25 @@ function NewAppointmentPage() {
               {/* Step 4: Confirmação */}
               {currentStep === 3 && (
                 <div>
-                  <h2 className="text-2xl font-semibold text-white mb-6">
+                  <h2 className="text-2xl font-semibold mb-6 text-primary">
                     Confirme seu Agendamento
                   </h2>
-                  <Card className="bg-[#232225] border-gray-700 max-w-2xl">
+                  <Card className="max-w-2xl bg-card border-light">
                     <div className="space-y-4">
-                      <div className="border-b border-gray-700 pb-4">
-                        <h3 className="text-gray-400 text-sm mb-1">Barbeiro</h3>
-                        <p className="text-white text-lg font-semibold">
+                      <div className="border-b pb-4 divider-custom">
+                        <h3 className="text-sm mb-1 text-muted">
+                          Barbeiro
+                        </h3>
+                        <p className="text-lg font-semibold text-primary">
                           {getSelectedBarber()?.name}
                         </p>
                       </div>
 
-                      <div className="border-b border-gray-700 pb-4">
-                        <h3 className="text-gray-400 text-sm mb-1">Serviço</h3>
-                        <p className="text-white text-lg font-semibold">
+                      <div className="border-b pb-4 divider-custom">
+                        <h3 className="text-sm mb-1 text-muted">
+                          Serviço
+                        </h3>
+                        <p className="text-lg font-semibold text-primary">
                           {getSelectedService()?.name}
                         </p>
                         <div className="flex items-center gap-4 mt-2">
@@ -502,9 +513,11 @@ function NewAppointmentPage() {
                         </div>
                       </div>
 
-                      <div className="border-b border-gray-700 pb-4">
-                        <h3 className="text-gray-400 text-sm mb-1">Data e Hora</h3>
-                        <p className="text-white text-lg font-semibold">
+                      <div className="border-b pb-4 divider-custom">
+                        <h3 className="text-sm mb-1 text-muted">
+                          Data e Hora
+                        </h3>
+                        <p className="text-lg font-semibold text-primary">
                           {appointmentData.date && dayjs(appointmentData.date).format('DD/MM/YYYY')}
                           {' às '}
                           {appointmentData.time}
@@ -513,8 +526,12 @@ function NewAppointmentPage() {
 
                       {appointmentData.notes && (
                         <div>
-                          <h3 className="text-gray-400 text-sm mb-1">Observações</h3>
-                          <p className="text-white">{appointmentData.notes}</p>
+                          <h3 className="text-sm mb-1 text-muted">
+                            Observações
+                          </h3>
+                          <p className="text-primary">
+                            {appointmentData.notes}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -523,15 +540,14 @@ function NewAppointmentPage() {
                   <div className="flex gap-3 mt-6">
                     <Button 
                       onClick={() => setCurrentStep(2)}
-                      className="border-gray-600 text-gray-300 hover:text-white hover:border-white"
+                      className="btn-secondary"
                     >
                       Voltar
                     </Button>
                     <Button 
-                      type="primary"
                       loading={submitting}
                       onClick={handleSubmit}
-                      className="bg-green-600 border-green-600 hover:bg-green-700"
+                      className="btn-success"
                     >
                       Confirmar Agendamento
                     </Button>
@@ -541,34 +557,6 @@ function NewAppointmentPage() {
             </>
           )}
         </div>
-
-        <style >{`
-          .custom-steps .ant-steps-item-process .ant-steps-item-icon {
-            background-color: #F6DA5E;
-            border-color: #F6DA5E;
-          }
-          
-          .custom-steps .ant-steps-item-process .ant-steps-item-icon .ant-steps-icon {
-            color: #232225;
-          }
-          
-          .custom-steps .ant-steps-item-finish .ant-steps-item-icon {
-            background-color: transparent;
-            border-color: #F6DA5E;
-          }
-          
-          .custom-steps .ant-steps-item-finish .ant-steps-item-icon .ant-steps-icon {
-            color: #F6DA5E;
-          }
-          
-          .custom-steps .ant-steps-item-title {
-            color: #ffffff !important;
-          }
-          
-          .custom-steps .ant-steps-item-wait .ant-steps-item-title {
-            color: #8c8c8c !important;
-          }
-        `}</style>
       </div>
     </ConfigProvider>
   );

@@ -53,7 +53,7 @@ function UserPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070707] p-4 lg:p-10">
+    <div className="min-h-screen bg-[#1f2933] p-4 lg:p-10">
       {/* Header */}
       <div className="max-w-7xl mx-auto mb-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

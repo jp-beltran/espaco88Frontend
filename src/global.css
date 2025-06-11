@@ -1,5 +1,679 @@
 @import "tailwindcss";
 
+/* CSS Global - Cool Grey Dark Mode */
+
 :root {
+  /* Cool Grey Color Palette - Dark Mode */
+  --cool-grey-50: #1F2933;
+  --cool-grey-100: #323F4B;
+  --cool-grey-200: #3E4C59;
+  --cool-grey-300: #52606D;
+  --cool-grey-400: #616E7C;
+  --cool-grey-500: #7B8794;
+  --cool-grey-600: #9AA5B1;
+  --cool-grey-700: #CBD2D9;
+  --cool-grey-800: #E4E7EB;
+  --cool-grey-900: #F5F7FA;
+
+  --cool-yellow: #F6D45E;
+
+  /* Aliases para uso comum - Dark Mode */
+  --bg-primary: var(--cool-grey-50);
+  --bg-secondary: var(--cool-grey-100);
+  --bg-tertiary: var(--cool-grey-200);
+  
+  --text-primary: var(--cool-grey-900);
+  --text-secondary: var(--cool-grey-700);
+  --text-muted: var(--cool-grey-500);
+  
+  --border-light: var(--cool-grey-200);
+  --border-medium: var(--cool-grey-300);
+  --border-dark: var(--cool-grey-400);
+  
+  --surface-elevated: var(--cool-grey-100);
+  --surface-card: var(--cool-grey-100);
+  --surface-overlay: var(--cool-grey-800);
+  
+  /* Accent colors */
+  --accent-primary: var(--cool-grey-600);
+  --accent-hover: var(--cool-grey-700);
 }
 
+/* Steps customization */
+.custom-steps .ant-steps-item-process .ant-steps-item-icon {
+  background-color: var(--cool-grey-600) !important;
+  border-color: var(--cool-grey-600) !important;
+}
+
+.custom-steps .ant-steps-item-process .ant-steps-item-icon .ant-steps-icon {
+  color: var(--cool-grey-50) !important;
+}
+
+.custom-steps .ant-steps-item-finish .ant-steps-item-icon {
+  background-color: transparent !important;
+  border-color: var(--cool-grey-600) !important;
+}
+
+.custom-steps .ant-steps-item-finish .ant-steps-item-icon .ant-steps-icon {
+  color: var(--cool-grey-600) !important;
+}
+
+.custom-steps .ant-steps-item-title {
+  color: var(--cool-grey-900) !important;
+}
+
+.custom-steps .ant-steps-item-wait .ant-steps-item-title {
+  color: var(--cool-grey-500) !important;
+}
+
+.custom-steps .ant-steps-item-wait .ant-steps-item-icon {
+  background-color: transparent !important;
+  border-color: var(--cool-grey-300) !important;
+}
+
+.custom-steps .ant-steps-item-wait .ant-steps-item-icon .ant-steps-icon {
+  color: var(--cool-grey-400) !important;
+}
+
+.custom-steps .ant-steps-item-tail::after {
+  background-color: var(--cool-grey-300) !important;
+}
+
+.custom-steps .ant-steps-item-finish .ant-steps-item-tail::after {
+  background-color: var(--cool-grey-600) !important;
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease !important;
+  border-color: var(--border-light) !important;
+}
+
+.card-hover:hover {
+  border-color: var(--cool-grey-600) !important;
+  box-shadow: 0 4px 12px rgba(154, 165, 177, 0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Button variants */
+.btn-secondary {
+  border-color: var(--cool-grey-300) !important;
+  color: var(--cool-grey-600) !important;
+  background-color: transparent !important;
+}
+
+.btn-secondary:hover {
+  border-color: var(--cool-grey-500) !important;
+  color: var(--cool-grey-800) !important;
+}
+
+.btn-primary-custom {
+  background-color: var(--cool-grey-700) !important;
+  border-color: var(--cool-grey-700) !important;
+  color: var(--cool-grey-50) !important;
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--cool-grey-800) !important;
+  border-color: var(--cool-grey-800) !important;
+}
+
+.btn-primary-custom:disabled {
+  background-color: var(--cool-grey-300) !important;
+  border-color: var(--cool-grey-300) !important;
+  color: var(--cool-grey-500) !important;
+}
+
+/* Time slot buttons */
+.time-slot-button {
+  border-color: var(--cool-grey-300) !important;
+  color: var(--cool-grey-600) !important;
+  background-color: var(--surface-card) !important;
+  transition: all 0.2s ease !important;
+}
+
+.time-slot-button:hover {
+  border-color: var(--cool-grey-500) !important;
+  color: var(--cool-grey-800) !important;
+}
+
+.time-slot-button.selected {
+  background-color: var(--cool-grey-700) !important;
+  border-color: var(--cool-grey-700) !important;
+  color: var(--cool-grey-50) !important;
+}
+
+/* Text colors */
+.text-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+/* Background colors */
+.bg-primary {
+  background-color: var(--bg-primary) !important;
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary) !important;
+}
+
+.bg-card {
+  background-color: var(--surface-card) !important;
+}
+
+/* Border colors */
+.border-light {
+  border-color: var(--border-light) !important;
+}
+
+.border-medium {
+  border-color: var(--border-medium) !important;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  color: var(--cool-grey-500) !important;
+}
+
+/* Custom textarea */
+.custom-textarea {
+  background-color: var(--cool-grey-200) !important;
+  border-color: var(--cool-grey-300) !important;
+  color: var(--cool-grey-900) !important;
+}
+
+.custom-textarea:focus {
+  border-color: var(--cool-grey-600) !important;
+  box-shadow: 0 0 0 2px rgba(154, 165, 177, 0.2) !important;
+}
+
+/* Success button */
+.btn-success {
+  background-color: #059669 !important;
+  border-color: #059669 !important;
+  color: white !important;
+}
+
+.btn-success:hover {
+  background-color: #047857 !important;
+  border-color: #047857 !important;
+}
+
+/* Divider */
+.divider-custom {
+  border-color: var(--border-light) !important;
+}
+
+/* Empty state */
+.empty-description {
+  color: var(--text-muted) !important;
+}
+
+/* UserProfile Component - Dark Mode CSS Global */
+
+/* Profile Page Layout */
+.profile-container {
+  background-color: var(--cool-grey-100);
+  border: 1px solid var(--cool-grey-200);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.profile-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--cool-grey-200);
+  background-color: var(--cool-grey-50);
+}
+
+.profile-header-accent {
+  width: 4px;
+  height: 32px;
+  background: linear-gradient(to bottom, var(--cool-yellow), var(--color-yellow-500));
+  border-radius: 9999px;
+}
+
+.profile-title {
+  color: var(--color-yellow-500);
+  font-size: 1.875rem;
+  font-weight: bold;
+}
+
+.profile-subtitle {
+  color: var(--cool-grey-600);
+}
+
+.profile-content {
+  padding: 24px 32px;
+}
+
+/* Avatar Section */
+.avatar-container {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-main {
+  width: 120px !important;
+  height: 120px !important;
+   box-shadow: 0 0 0 4px var(--cool-yellow);
+  transition: all 0.3s ease;
+}
+
+.avatar-main:hover {
+  box-shadow: 0 0 0 4px var(--color-yellow-500);
+}
+
+.avatar-badge {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, var(--cool-grey-600), var(--cool-grey-700));
+  color: var(--cool-grey-50);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.avatar-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(31, 41, 51, 0.6);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.avatar-container:hover .avatar-overlay {
+  opacity: 1;
+}
+
+.avatar-overlay .anticon {
+  color: var(--cool-yellow);
+  font-size: 20px;
+}
+
+/* User Info */
+.user-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.user-type-indicator {
+
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--cool-yellow);
+}
+
+.user-type-text {
+  color: var(--cool-yellow);
+  font-weight: 500;
+}
+
+.avatar-change-link {
+  margin-top: 8px;
+  padding: 0;
+  color: var(--cool-grey-600) !important;
+  text-decoration: none;
+}
+
+.avatar-change-link:hover {
+  color: var(--cool-grey-700) !important;
+}
+
+/* Form Cards */
+.form-card {
+  background-color: var(--surface-card) !important;
+  border: 1px solid var(--border-light) !important;
+  transition: all 0.3s ease;
+  margin-bottom: 16px;
+}
+
+.form-card:hover {
+  border-color: var(--cool-grey-300) !important;
+}
+
+.form-card .ant-card-body {
+  padding: 20px;
+  background-color: var(--surface-card) !important;
+}
+
+/* Form Labels */
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary) !important;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.form-label .anticon {
+  color: var(--cool-grey-500);
+}
+
+/* Input Fields */
+.profile-input {
+  background-color: var(--cool-grey-200) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-medium) !important;
+  font-size: 16px;
+  padding: 12px 16px;
+  height: 48px;
+}
+
+.profile-input:focus,
+.profile-input-focused {
+  background-color: var(--cool-grey-100) !important;
+  border-color: var(--cool-grey-600) !important;
+  box-shadow: 0 0 0 2px rgba(154, 165, 177, 0.2) !important;
+}
+
+.profile-input:disabled,
+.profile-input-disabled {
+  background-color: var(--cool-grey-100) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-light) !important;
+  cursor: not-allowed !important;
+}
+
+/* Edit Icons */
+.edit-icon {
+  cursor: pointer;
+  transition: color 0.2s ease;
+  color: var(--cool-grey-400) !important;
+  font-size: 16px;
+}
+
+.edit-icon:hover {
+  color: var(--cool-grey-600) !important;
+}
+
+.edit-icon.active {
+  color: var(--cool-grey-600) !important;
+}
+
+/* Password Field Special Styling */
+.password-container {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--cool-grey-500);
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: var(--cool-grey-700);
+}
+
+.password-edit-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  padding-top: 16px;
+}
+
+.btn-cancel {
+  flex: 1;
+  height: 48px;
+  font-weight: 500;
+  background-color: var(--cool-grey-300) !important;
+  border-color: var(--cool-grey-300) !important;
+  color: var(--cool-grey-50) !important;
+}
+
+.btn-cancel:hover {
+  background-color: var(--cool-grey-400) !important;
+  border-color: var(--cool-grey-400) !important;
+}
+
+.btn-save {
+  flex: 1;
+  height: 48px;
+  font-weight: 500;
+  background-color: var(--cool-yellow) !important;
+  border-color: var(--color-yellow-500) !important;
+  color: var(--cool-grey-50) !important;
+}
+
+.btn-save:hover {
+  background-color: var(--color-yellow-400) !important;
+  border-color: var(--cool-yellow-800) !important;
+}
+
+/* Help Box */
+.help-box {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: rgba(154, 165, 177, 0.1);
+  border: 1px solid rgba(154, 165, 177, 0.2);
+  border-radius: 8px;
+}
+
+.help-text {
+  color: var(--cool-grey-700);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Loading Container */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 384px;
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: 24px;
+}
+
+.loading-spinner {
+  font-size: 48px;
+  color: var(--cool-grey-500);
+}
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 384px;
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: 24px;
+}
+
+.error-text {
+  color: var(--text-muted);
+}
+
+/* Modal Styles */
+.avatar-modal .ant-modal-content {
+  background-color: var(--surface-card) !important;
+  border: 1px solid var(--border-light);
+}
+
+.avatar-modal .ant-modal-header {
+  background-color: var(--surface-card) !important;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.avatar-modal .ant-modal-title {
+  color: var(--text-primary) !important;
+}
+
+.avatar-modal .ant-modal-close {
+  color: var(--text-muted) !important;
+}
+
+.avatar-modal .ant-modal-close:hover {
+  color: var(--text-primary) !important;
+}
+
+.modal-content {
+  background-color: var(--surface-card);
+}
+
+.modal-preview {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.modal-preview-text {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-upload {
+  width: 100%;
+  height: 48px;
+  background-color: var(--cool-grey-700) !important;
+  border-color: var(--cool-grey-700) !important;
+  color: var(--cool-grey-50) !important;
+}
+
+.btn-upload:hover {
+  background-color: var(--cool-grey-800) !important;
+  border-color: var(--cool-grey-800) !important;
+}
+
+.btn-remove {
+  width: 100%;
+  height: 48px;
+  background-color: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: white !important;
+}
+
+.btn-remove:hover {
+  background-color: #b91c1c !important;
+  border-color: #b91c1c !important;
+}
+
+.btn-modal-cancel {
+  width: 100%;
+  height: 48px;
+  background-color: var(--cool-grey-300) !important;
+  border-color: var(--cool-grey-300) !important;
+  color: var(--cool-grey-50) !important;
+}
+
+.btn-modal-cancel:hover {
+  background-color: var(--cool-grey-400) !important;
+  border-color: var(--cool-grey-400) !important;
+}
+
+.modal-help {
+  background-color: rgba(154, 165, 177, 0.1);
+  border: 1px solid rgba(154, 165, 177, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 16px;
+}
+
+.modal-help-text {
+  color: var(--cool-grey-700);
+  font-size: 12px;
+  margin: 0;
+}
+
+/* Ant Design Overrides */
+.ant-form-item-label > label {
+  color: var(--text-secondary) !important;
+}
+
+.ant-form-item-explain-error {
+  color: #ef4444 !important;
+}
+
+.ant-input-suffix {
+  color: var(--cool-grey-500) !important;
+}
+
+.ant-input-suffix:active {
+  color: var(--cool-yellow) !important;
+}
+
+.ant-input-suffix .anticon {
+  color: inherit !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .profile-content {
+    padding: 24px;
+  }
+  
+  .user-info {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  
+  .form-section {
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-header {
+    padding: 16px;
+  }
+  
+  .profile-content {
+    padding: 16px;
+  }
+  
+  .profile-title {
+    font-size: 1.5rem;
+  }
+  
+  .avatar-main {
+    width: 100px !important;
+    height: 100px !important;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+}

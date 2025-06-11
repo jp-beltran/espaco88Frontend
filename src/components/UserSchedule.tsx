@@ -525,12 +525,12 @@ export default UserSchedule;
 // CSS para forçar o tema escuro e sobrescrever o Ant Design
 const darkStyles = `
   .ant-card {
-    background-color: #070707 !important;
+    
     border-color: #374151 !important;
   }
   
   .ant-card-body {
-    background-color: #070707 !important;
+    
   }
   
   .ant-modal-content {
